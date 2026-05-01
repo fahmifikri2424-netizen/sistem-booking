@@ -30,9 +30,6 @@ php spark migrate
 php spark db:seed UserSeeder
 
 5. Akun Demo 
-| Role  | Username | Password |
-| ----- | -------- | -------- |
-| Admin | yogi     | 123      |
-| Staff | ichlas   | 123      |
-| User  | rizal    | 123      |
-
+role = admin, username = yogi , password = 123 , 
+role = staff, username = ichlas , password = 123 ,
+role = user, username = rizal  , password = 123
