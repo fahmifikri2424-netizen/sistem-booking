@@ -1,6 +1,7 @@
 <?= $this->extend('layout_clear') ?>
 <?= $this->section('main') ?>
-<?php
+<?php  
+//session
 $username = [
     'name' => 'username',
     'id' => 'username',

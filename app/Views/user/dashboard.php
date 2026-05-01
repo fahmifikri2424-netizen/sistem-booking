@@ -2,7 +2,10 @@
 
 <?= $this->section('content') ?>
 
+<!-- Menampilkan Data -->
+<h2>Dashboard Pelanggan</h2>
 <p>Username: <?= session('username') ?></p>
-<p>Role: <?= session('role') ?></p>
 <a href="/logout">Logout</a>
+
+
 <?= $this->endSection() ?>

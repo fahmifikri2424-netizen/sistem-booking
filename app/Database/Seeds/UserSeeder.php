@@ -4,7 +4,12 @@ namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
 
-class UserSeeder extends Seeder
+
+//Untuk Mengisi Table
+//buat seeder = php spark make:seeder UserSeeder
+//jalankan = php spark db:seed UserSeeder
+
+class UserSeeder extends Seeder 
 {
     public function run()
     {
@@ -15,9 +20,14 @@ class UserSeeder extends Seeder
                 'role' => 'admin'
             ],
             [
-                'username' => 'user',
+                'username' => 'ichlas',
                 'password' => password_hash('123', PASSWORD_DEFAULT),
-                'role' => 'user'
+                'role' => 'staff'
+            ],
+            [
+                'username' => 'rizal',
+                'password' => password_hash('123', PASSWORD_DEFAULT),
+                'role' => 'pelanggan'
             ]
         ];
 

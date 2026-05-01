@@ -4,7 +4,12 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateUsers extends Migration
+//Untuk Membuat Table Users
+//buat table users = php spark make:migration CreateUsers
+//jalankan = php spark migrate
+
+class CreateUsers extends Migration  
+
 {
    public function up()
     {

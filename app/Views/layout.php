@@ -63,7 +63,9 @@ if(uri_string()!=""){
 
           <div class="card">
             
-            <div class="card-body">
+            <div class="card-body p-5">
+
+
                 <h5 class="card-title"><?php echo $hlm?></h5>
                 <?= $this->renderSection('content') ?>
              
@@ -77,6 +79,7 @@ if(uri_string()!=""){
         </div>
       </div>
     </section>
+
 
   </main><!-- End #main -->
 

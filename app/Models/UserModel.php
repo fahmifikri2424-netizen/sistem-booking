@@ -4,6 +4,8 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
+//buat model = php spark make:model UserModel
+
 class UserModel extends Model
 {
     protected $table            = 'users';
@@ -12,7 +14,7 @@ class UserModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['username', 'password', 'role'];
+    protected $allowedFields    = ['username', 'password', 'role']; //penghubung ke database (ambil, insert, update data).
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -1,5 +1,7 @@
 <?php
 
+//memcegah akses tanpa login
+
 namespace App\Filters;
 
 use CodeIgniter\Filters\FilterInterface;
@@ -25,9 +27,27 @@ class AuthFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session()->get('logged_in')) {
+        if (!session()->get('logged_in')) {  //Kalau user belum login, arahkan ke halaman login
             return redirect()->to('/login');
         }
+
+        $current = uri_string();  //Ambil URL yang sedang dibuka sekarang  
+
+        // cek role
+        if (!empty($arguments)) {  //cek role di route
+            if (!in_array(session()->get('role'), $arguments)) {  //memastikan agar role sesuai
+
+                // redirect sesuai role
+                if (session()->get('role') == 'admin') { //masuk ke admin
+                    return redirect()->to('/admin');
+                } elseif (session()->get('role') == 'staff') { //masuk ke staff
+                    return redirect()->to('/staff');
+                } elseif (session()->get('role') == 'user') {  //masuk ke user
+                    return redirect()->to('/user'); 
+                }
+            }
+        }
+
     }
 
     /**
