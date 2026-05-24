@@ -6,15 +6,7 @@ if(uri_string()!=""){
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<style>
-#main {
-  margin-left: 0 !important;
-}
 
-#sidebar {
-  display: none !important;
-}
-</style>
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -54,6 +46,12 @@ if(uri_string()!=""){
 
 <body>
 
+  <?= $this->include('components/header') ?>
+
+  <?= $this->include('components/sidebar') ?>
+
+  
+
   <main id="main" class="main">
 
 
@@ -67,11 +65,8 @@ if(uri_string()!=""){
 
 
                 <h5 class="card-title"><?php echo $hlm?></h5>
+                
                 <?= $this->renderSection('content') ?>
-             
-              <!-- Table with stripped rows -->
-              <?= $this->renderSection('content') ?>
-              <!-- End Table with stripped rows -->
 
             </div>
           </div>
@@ -83,7 +78,7 @@ if(uri_string()!=""){
 
   </main><!-- End #main -->
 
-
+  <?= $this->include('components/footer') ?>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
