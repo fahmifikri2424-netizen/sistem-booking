@@ -55,8 +55,14 @@ $password = [
                                 <?= form_password($password) ?>
                         <div class="invalid-feedback">Please enter your password!</div>
                     </div>
-                    <div class="col-12">
-                        <?= form_submit('submit', 'Login', ['class' => 'btn btn-primary w-100']) ?>
+                    <div class="col-12 mt-3">
+                        <?= form_submit('submit', 'Login', ['class' => 'btn btn-primary w-100 fw-semibold py-2']) ?>
+                    </div>
+                    
+                    <div class="col-12 text-center mt-3">
+                        <p class="small mb-0">Belum punya akun?
+                            <a href="<?= base_url('register') ?>" class="fw-semibold text-primary">Daftar di sini</a>
+                        </p>
                     </div>
 
                     <?= form_close() ?>

@@ -11,6 +11,8 @@ $routes->get('/', 'AuthController::index');  // awal masuk
 $routes->get('/login', 'AuthController::index'); // menampilkan form login
 $routes->post('/login', 'AuthController::login'); // proses login
 $routes->get('/logout', 'AuthController::logout'); // logout
+$routes->get('/register', 'AuthController::showRegister'); // form register
+$routes->post('/register', 'AuthController::register'); // proses register
 
 $routes->get('/admin', 'Admin::index', ['filter' => 'auth:admin']);
 
@@ -47,6 +49,10 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('staffs/update/(:num)', 'AdminStaffController::update/$1');
     $routes->post('staffs/delete/(:num)', 'AdminStaffController::delete/$1');
 
+    // Routes for Reviews (Admin)
+    $routes->get('reviews', 'AdminReviewController::index');
+    $routes->post('reviews/delete/(:num)', 'AdminReviewController::delete/$1');
+
     // Routes for Users (Admin)
     $routes->get('users', 'UserController::index');
     $routes->get('users/create', 'UserController::create');
@@ -55,5 +61,24 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('users/update/(:num)', 'UserController::update/$1');
     $routes->get('users/delete/(:num)', 'UserController::delete/$1');
 });
-$routes->get('/staff', 'Staff::index', ['filter' => 'auth:staff']);
-$routes->get('/user', 'User::index', ['filter' => 'auth:user']);
+// Routes for Staff (role: staff)
+$routes->group('staff', ['filter' => 'auth:staff'], function($routes) {
+    $routes->get('', 'Staff::index');
+    $routes->get('jadwal', 'Staff::jadwal');
+    $routes->get('update-status', 'Staff::updateStatus');
+    $routes->post('update-status/(:num)', 'Staff::prosesUpdateStatus/$1');
+    $routes->get('riwayat', 'Staff::riwayat');
+});
+
+// Routes for User/Customer (role: customer)
+$routes->group('user', ['filter' => 'auth:customer'], function($routes) {
+    $routes->get('', 'User::index');
+    $routes->get('layanan', 'User::layanan');
+    $routes->get('pilih-jadwal/(:num)', 'User::pilihJadwal/$1');
+    $routes->get('form-booking', 'User::formBooking');
+    $routes->post('booking/store', 'User::storeBooking');
+    $routes->get('riwayat', 'User::riwayat');
+    $routes->post('batal/(:num)', 'User::batalBooking/$1');
+    $routes->get('ulasan/(:num)', 'User::formUlasan/$1');
+    $routes->post('ulasan/store', 'User::storeUlasan');
+});

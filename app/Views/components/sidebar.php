@@ -57,7 +57,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'admin/reviews') !== false) ? "" : "collapsed" ?>" href="<?= base_url('admin/reviews') ?>">
                     <i class="bi bi-star"></i>
                     <span>Review</span>
                 </a>
@@ -72,6 +72,81 @@
                 </a>
             </li>
             
+        <?php elseif(session()->get('role') == 'staff'): ?>
+            <!-- Sidebar Staff -->
+            <li class="nav-heading">Staff Panel</li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (uri_string() == 'staff') ? "" : "collapsed" ?>" href="<?= base_url('staff') ?>">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'staff/jadwal') !== false) ? "" : "collapsed" ?>" href="<?= base_url('staff/jadwal') ?>">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Jadwal Harian</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'staff/update-status') !== false) ? "" : "collapsed" ?>" href="<?= base_url('staff/update-status') ?>">
+                    <i class="bi bi-pencil-square"></i>
+                    <span>Update Status</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'staff/riwayat') !== false) ? "" : "collapsed" ?>" href="<?= base_url('staff/riwayat') ?>">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Riwayat Pekerjaan</span>
+                </a>
+            </li>
+
+            <li class="nav-heading mt-3">Akun</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed text-danger" href="<?= base_url('logout') ?>">
+                    <i class="bi bi-box-arrow-right text-danger"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+
+        <?php elseif(session()->get('role') == 'customer' || session()->get('role') == 'user'): ?>
+            <!-- Sidebar User/Customer -->
+            <li class="nav-heading">Menu Pelanggan</li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (uri_string() == 'user') ? "" : "collapsed" ?>" href="<?= base_url('user') ?>">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'user/layanan') !== false || strpos(uri_string(), 'user/pilih-jadwal') !== false || strpos(uri_string(), 'user/form-booking') !== false) ? "" : "collapsed" ?>" href="<?= base_url('user/layanan') ?>">
+                    <i class="bi bi-scissors"></i>
+                    <span>Daftar Layanan</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'user/riwayat') !== false || strpos(uri_string(), 'user/ulasan') !== false) ? "" : "collapsed" ?>" href="<?= base_url('user/riwayat') ?>">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Riwayat Booking</span>
+                </a>
+            </li>
+
+            <li class="nav-heading mt-3">Akun</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed text-danger" href="<?= base_url('logout') ?>">
+                    <i class="bi bi-box-arrow-right text-danger"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+
         <?php else: ?>
             <!-- Sidebar role lain -->
             <li class="nav-item">
