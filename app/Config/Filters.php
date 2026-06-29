@@ -34,7 +34,9 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-        'auth'          => \App\Filters\AuthFilter::class  //mendaftarkan fungsi AuthFilter
+        'auth'          => \App\Filters\AuthFilter::class,  // mendaftarkan fungsi AuthFilter
+        'api_cors'      => \App\Filters\CorsFilter::class,   // CORS untuk endpoint API publik
+        'api_auth'      => \App\Filters\ApiKeyFilter::class, // API Key auth untuk endpoint /api/*
     ];
 
     /**
@@ -107,5 +109,15 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        // Terapkan CORS filter pada semua route /api/*
+        'api_cors' => [
+            'before' => ['api/*'],
+            'after'  => ['api/*'],
+        ],
+        // Validasi API Key pada semua route /api/*
+        'api_auth' => [
+            'before' => ['api/*'],
+        ],
+    ];
 }

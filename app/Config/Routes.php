@@ -82,3 +82,14 @@ $routes->group('user', ['filter' => 'auth:customer'], function($routes) {
     $routes->get('ulasan/(:num)', 'User::formUlasan/$1');
     $routes->post('ulasan/store', 'User::storeUlasan');
 });
+
+// =========================================================================
+// PUBLIC API ROUTES (tanpa autentikasi, hanya baca data)
+// =========================================================================
+$routes->group('api', function ($routes) {
+    // GET /api/services  → daftar layanan aktif
+    $routes->get('services', 'ApiController::services');
+
+    // GET /api/booking-status/{id}  → id bisa berupa id_booking (angka) atau kode_booking
+    $routes->get('booking-status/(:segment)', 'ApiController::bookingStatus/$1');
+});
