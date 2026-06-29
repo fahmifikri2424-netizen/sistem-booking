@@ -22,7 +22,7 @@ class GoogleCalendar extends BaseConfig
      * Anda bisa override ini dari .env dengan variabel:
      * GOOGLE_CALENDAR_ID = 'your_calendar_id_here'
      */
-    public string $calendarId = 'yogapazha167@gmail.com';
+    public string $calendarId = 'rf595584@gmail.com';
 
     /**
      * Timezone yang digunakan untuk event Google Calendar.
