@@ -21,7 +21,8 @@ class BookingModel extends Model
         'tanggal_booking',
         'catatan',
         'status_booking',
-        'status_pembayaran'
+        'status_pembayaran',
+        'google_calendar_event_id',
     ];
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

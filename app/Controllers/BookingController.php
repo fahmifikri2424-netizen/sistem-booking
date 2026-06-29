@@ -8,6 +8,7 @@ use App\Models\UserModel;
 use App\Models\ServiceModel;
 use App\Models\ScheduleModel;
 use App\Models\StaffModel;
+use App\Libraries\GoogleCalendar;
 
 class BookingController extends BaseController
 {
@@ -21,7 +22,7 @@ class BookingController extends BaseController
     public function index()
     {
         $data['bookings'] = $this->bookingModel
-            ->select('bookings.*, users.nama, services.nama as nama_service, schedules.tanggal, staff_user.nama as nama_staff')
+            ->select('bookings.*, users.nama, services.nama as nama_service, schedules.tanggal, schedules.jam_mulai, schedules.jam_selesai, staff_user.nama as nama_staff')
             ->join('users', 'users.id_user = bookings.id_user')
             ->join('services', 'services.id_service = bookings.id_service')
             ->join('schedules', 'schedules.id_schedule = bookings.id_schedule')
@@ -70,35 +71,70 @@ class BookingController extends BaseController
         return redirect()->to('/admin/bookings');
     }
 
+    /**
+     * Mengkonfirmasi booking dan secara otomatis membuat event di Google Calendar.
+     */
     public function confirm($id)
     {
-        $booking = $this->bookingModel->find($id);
+        // Ambil data booking lengkap beserta relasi
+        $booking = $this->bookingModel
+            ->select('bookings.*, users.nama as nama_pelanggan, services.nama as nama_service, schedules.tanggal, schedules.jam_mulai, schedules.jam_selesai, staff_user.nama as nama_staff')
+            ->join('users', 'users.id_user = bookings.id_user')
+            ->join('services', 'services.id_service = bookings.id_service')
+            ->join('schedules', 'schedules.id_schedule = bookings.id_schedule')
+            ->join('staffs', 'staffs.id_staff = bookings.id_staff')
+            ->join('users as staff_user', 'staff_user.id_user = staffs.id_user')
+            ->find($id);
 
-        if ($booking) {
-            $this->bookingModel->update($id, [
-                'status_booking' => 'dikonfirmasi'
-            ]);
-            session()->setFlashdata('success', 'Booking berhasil dikonfirmasi.');
-        } else {
+        if (!$booking) {
             session()->setFlashdata('error', 'Booking tidak ditemukan.');
+            return redirect()->to('/admin/bookings');
+        }
+
+        // Update status booking menjadi dikonfirmasi
+        $this->bookingModel->update($id, [
+            'status_booking' => 'dikonfirmasi'
+        ]);
+
+        // Coba buat event di Google Calendar
+        $googleEventId = $this->createGoogleCalendarEvent($booking);
+
+        // Simpan ID event Google Calendar ke database (jika berhasil)
+        if ($googleEventId) {
+            $this->bookingModel->update($id, [
+                'google_calendar_event_id' => $googleEventId
+            ]);
+            session()->setFlashdata('success', 'Booking berhasil dikonfirmasi dan jadwal telah ditambahkan ke Google Calendar. 📅');
+        } else {
+            session()->setFlashdata('success', 'Booking berhasil dikonfirmasi. (Catatan: Gagal menambahkan ke Google Calendar, cek log untuk detail.)');
         }
 
         return redirect()->to('/admin/bookings');
     }
 
+    /**
+     * Membatalkan booking dan menghapus event dari Google Calendar jika ada.
+     */
     public function cancel($id)
     {
         $booking = $this->bookingModel->find($id);
 
-        if ($booking) {
-            $this->bookingModel->update($id, [
-                'status_booking' => 'batal'
-            ]);
-            session()->setFlashdata('success', 'Booking berhasil dibatalkan/ditolak.');
-        } else {
+        if (!$booking) {
             session()->setFlashdata('error', 'Booking tidak ditemukan.');
+            return redirect()->to('/admin/bookings');
         }
 
+        // Hapus event dari Google Calendar jika ada ID-nya
+        if (!empty($booking['google_calendar_event_id'])) {
+            $this->deleteGoogleCalendarEvent($booking['google_calendar_event_id']);
+        }
+
+        $this->bookingModel->update($id, [
+            'status_booking'           => 'batal',
+            'google_calendar_event_id' => null,
+        ]);
+
+        session()->setFlashdata('success', 'Booking berhasil dibatalkan/ditolak.');
         return redirect()->to('/admin/bookings');
     }
 
@@ -106,13 +142,61 @@ class BookingController extends BaseController
     {
         $booking = $this->bookingModel->find($id);
 
-        if ($booking) {
-            $this->bookingModel->delete($id);
-            session()->setFlashdata('success', 'Booking berhasil dihapus.');
-        } else {
+        if (!$booking) {
             session()->setFlashdata('error', 'Booking tidak ditemukan.');
+            return redirect()->to('/admin/bookings');
         }
 
+        // Hapus event dari Google Calendar jika ada
+        if (!empty($booking['google_calendar_event_id'])) {
+            $this->deleteGoogleCalendarEvent($booking['google_calendar_event_id']);
+        }
+
+        $this->bookingModel->delete($id);
+        session()->setFlashdata('success', 'Booking berhasil dihapus.');
         return redirect()->to('/admin/bookings');
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE HELPER METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Membuat event Google Calendar dari data booking.
+     * Mengembalikan Event ID jika berhasil, atau null jika gagal.
+     */
+    private function createGoogleCalendarEvent(array $booking): ?string
+    {
+        try {
+            $googleCalendar = new GoogleCalendar();
+
+            return $googleCalendar->createBookingEvent([
+                'kode_booking'   => $booking['kode_booking'],
+                'nama_pelanggan' => $booking['nama_pelanggan'],
+                'nama_staff'     => $booking['nama_staff'],
+                'nama_service'   => $booking['nama_service'],
+                'tanggal'        => $booking['tanggal'],
+                'jam_mulai'      => $booking['jam_mulai'],
+                'jam_selesai'    => $booking['jam_selesai'],
+                'catatan'        => $booking['catatan'] ?? '',
+            ]);
+
+        } catch (\Exception $e) {
+            log_message('error', '[BookingController] Google Calendar error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Menghapus event Google Calendar berdasarkan event ID.
+     */
+    private function deleteGoogleCalendarEvent(string $eventId): void
+    {
+        try {
+            $googleCalendar = new GoogleCalendar();
+            $googleCalendar->deleteEvent($eventId);
+        } catch (\Exception $e) {
+            log_message('error', '[BookingController] Gagal hapus Google Calendar event: ' . $e->getMessage());
+        }
     }
 }

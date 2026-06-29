@@ -14,7 +14,7 @@
                     <div class="row mb-3">
                         <label for="tanggal" class="col-sm-2 col-form-label">Tanggal</label>
                         <div class="col-sm-10">
-                            <input type="date" class="form-control <?= ($validation->hasError('tanggal')) ? 'is-invalid' : '' ?>" id="tanggal" name="tanggal" value="<?= old('tanggal', $schedule['tanggal']) ?>">
+                            <input type="date" class="form-control <?= ($validation->hasError('tanggal')) ? 'is-invalid' : '' ?>" id="tanggal" name="tanggal" value="<?= old('tanggal', $schedule['tanggal']) ?>" required>
                             <div class="invalid-feedback">
                                 <?= $validation->getError('tanggal') ?>
                             </div>
@@ -24,7 +24,7 @@
                     <div class="row mb-3">
                         <label for="jam_mulai" class="col-sm-2 col-form-label">Jam Mulai</label>
                         <div class="col-sm-10">
-                            <input type="time" class="form-control <?= ($validation->hasError('jam_mulai')) ? 'is-invalid' : '' ?>" id="jam_mulai" name="jam_mulai" value="<?= old('jam_mulai', $schedule['jam_mulai']) ?>">
+                            <input type="time" class="form-control <?= ($validation->hasError('jam_mulai')) ? 'is-invalid' : '' ?>" id="jam_mulai" name="jam_mulai" value="<?= old('jam_mulai', $schedule['jam_mulai']) ?>" required>
                             <div class="invalid-feedback">
                                 <?= $validation->getError('jam_mulai') ?>
                             </div>
@@ -34,7 +34,7 @@
                     <div class="row mb-3">
                         <label for="jam_selesai" class="col-sm-2 col-form-label">Jam Selesai</label>
                         <div class="col-sm-10">
-                            <input type="time" class="form-control <?= ($validation->hasError('jam_selesai')) ? 'is-invalid' : '' ?>" id="jam_selesai" name="jam_selesai" value="<?= old('jam_selesai', $schedule['jam_selesai']) ?>">
+                            <input type="time" class="form-control <?= ($validation->hasError('jam_selesai')) ? 'is-invalid' : '' ?>" id="jam_selesai" name="jam_selesai" value="<?= old('jam_selesai', $schedule['jam_selesai']) ?>" required>
                             <div class="invalid-feedback">
                                 <?= $validation->getError('jam_selesai') ?>
                             </div>
@@ -44,7 +44,7 @@
                     <div class="row mb-3">
                         <label for="kapasitas" class="col-sm-2 col-form-label">Kapasitas</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control <?= ($validation->hasError('kapasitas')) ? 'is-invalid' : '' ?>" id="kapasitas" name="kapasitas" value="<?= old('kapasitas', $schedule['kapasitas']) ?>">
+                            <input type="number" class="form-control <?= ($validation->hasError('kapasitas')) ? 'is-invalid' : '' ?>" id="kapasitas" name="kapasitas" value="<?= old('kapasitas', $schedule['kapasitas']) ?>" required>
                             <div class="invalid-feedback">
                                 <?= $validation->getError('kapasitas') ?>
                             </div>

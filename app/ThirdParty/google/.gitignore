@@ -1,0 +1,5 @@
+# File JSON Service Account Google (SANGAT RAHASIA - jangan di-commit ke Git!)
+*.json
+
+# Tapi izinkan file .gitkeep
+!.gitkeep
