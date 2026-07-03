@@ -350,23 +350,11 @@ class PaymentController extends BaseController
                 return;
             }
 
-            $emailConfig = [
-                'protocol' => 'smtp',
-                'SMTPHost' => env('MAIL_SMTP_HOST', 'smtp.gmail.com'),
-                'SMTPUser' => env('MAIL_SMTP_USER', ''),
-                'SMTPPass' => env('MAIL_SMTP_PASS', ''),
-                'SMTPPort' => (int) env('MAIL_SMTP_PORT', 587),
-                'SMTPCrypto' => 'tls',
-                'mailType'   => 'html',
-                'charset'    => 'UTF-8',
-                'wordWrap'   => true,
-            ];
-
             $email = \Config\Services::email();
-            $email->initialize($emailConfig);
-
-            $fromEmail = env('MAIL_FROM_EMAIL', env('MAIL_SMTP_USER', ''));
-            $fromName  = env('MAIL_FROM_NAME', 'Sistem Booking');
+            
+            $configEmail = config('Email');
+            $fromEmail = !empty($configEmail->fromEmail) ? $configEmail->fromEmail : $configEmail->SMTPUser;
+            $fromName  = !empty($configEmail->fromName) ? $configEmail->fromName : 'Sistem Booking';
 
             $email->setFrom($fromEmail, $fromName);
             $email->setTo($booking['email_pelanggan']);
