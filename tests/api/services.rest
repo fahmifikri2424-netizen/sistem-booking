@@ -1,28 +1,28 @@
 
-### [1a]  Cek status booking by ID angka
+###  Cek status booking by ID angka
 GET http://localhost:8080/api/booking-status/10
 Accept: application/json
 Authorization: Bearer sb_api_k3y_s3cur3_2024_x9mNpQrTvWzAb
-### [1b]  Cek status booking by kode_booking
+###  Cek status booking by kode_booking
 GET http://localhost:8080/api/booking-status/BOOK-7B29B7
 Accept: application/json
 Authorization: Bearer sb_api_k3y_s3cur3_2024_x9mNpQrTvWzAb
 
-### [1c] Booking tidak ditemukan → harus dapat 404
+###  Booking tidak ditemukan → harus dapat 404
 GET http://localhost:8080/api/booking-status/999
 Accept: application/json
 Authorization: Bearer sb_api_k3y_s3cur3_2024_x9mNpQrTvWzAb
 
-### [2a]  Ambil semua layanan aktif — dengan API Key valid
+###  Ambil semua layanan aktif — dengan API Key valid
 GET http://localhost:8080/api/services
 Accept: application/json
 Authorization: Bearer sb_api_k3y_s3cur3_2024_x9mNpQrTvWzAb
 
-### [2b]  Tanpa header Authorization → harus dapat 401
+###  Tanpa header Authorization → harus dapat 401
 GET http://localhost:8080/api/services
 Accept: application/json
 
-### [2c]  API Key salah → harus dapat 403
+###  API Key salah → harus dapat 403
 GET http://localhost:8080/api/services
 Accept: application/json
 Authorization: Bearer ini_key_yang_salah

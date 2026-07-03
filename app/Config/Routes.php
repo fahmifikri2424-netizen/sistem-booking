@@ -41,6 +41,9 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('bookings/cancel/(:num)', 'BookingController::cancel/$1');
     $routes->post('bookings/delete/(:num)', 'BookingController::delete/$1');
 
+    // Routes for Payments (Admin)
+    $routes->get('payments', 'AdminPaymentController::index');
+
     // Routes for Staff (Admin)
     $routes->get('staffs', 'AdminStaffController::index');
     $routes->get('staffs/create', 'AdminStaffController::create');
@@ -81,15 +84,20 @@ $routes->group('user', ['filter' => 'auth:customer'], function($routes) {
     $routes->post('batal/(:num)', 'User::batalBooking/$1');
     $routes->get('ulasan/(:num)', 'User::formUlasan/$1');
     $routes->post('ulasan/store', 'User::storeUlasan');
+
+    // Routes Payment Midtrans
+    $routes->post('payment/create/(:num)', 'PaymentController::createTransaction/$1');
+    $routes->get('payment/finish/(:num)',  'PaymentController::finish/$1');
 });
 
-// =========================================================================
-// PUBLIC API ROUTES (tanpa autentikasi, hanya baca data)
-// =========================================================================
-$routes->group('api', function ($routes) {
+
+$routes->group('api', ['filter' => 'api_auth'], function ($routes) {
     // GET /api/services  → daftar layanan aktif
     $routes->get('services', 'ApiController::services');
 
     // GET /api/booking-status/{id}  → id bisa berupa id_booking (angka) atau kode_booking
     $routes->get('booking-status/(:segment)', 'ApiController::bookingStatus/$1');
 });
+
+// Webhook Midtrans — tidak pakai API Key auth (Midtrans tidak kirim api.key header)
+$routes->post('api/payment/callback', 'PaymentController::callback');

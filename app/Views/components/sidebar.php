@@ -36,9 +36,9 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link <?php echo (strpos(uri_string(), 'admin/payments') !== false) ? "" : "collapsed" ?>" href="<?= base_url('admin/payments') ?>">
                     <i class="bi bi-wallet2"></i>
-                    <span>Pembayaran</span>
+                    <span>Laporan Pembayaran</span>
                 </a>
             </li>
 

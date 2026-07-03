@@ -104,7 +104,19 @@
                                     <i class="bi bi-journal-text me-1"></i>Catatan: <?= esc($item['catatan']) ?>
                                 <?php endif; ?>
                             </div>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap justify-content-end">
+                                <!-- Tombol BAYAR (Hanya jika dikonfirmasi & belum bayar) -->
+                                <?php if ($item['status_booking'] == 'dikonfirmasi' && $item['status_pembayaran'] == 'belum_bayar'): ?>
+                                    <button
+                                        id="btn-bayar-<?= $item['id_booking'] ?>"
+                                        class="btn btn-success btn-sm fw-bold px-3 btn-bayar"
+                                        data-booking-id="<?= $item['id_booking'] ?>"
+                                        data-create-url="<?= base_url('user/payment/create/' . $item['id_booking']) ?>"
+                                        onclick="initPayment(this)">
+                                        <i class="bi bi-credit-card me-1"></i>Bayar Sekarang
+                                    </button>
+                                <?php endif; ?>
+
                                 <!-- Batal Action (Hanya jika pending) -->
                                 <?php if ($item['status_booking'] == 'pending'): ?>
                                     <form action="<?= base_url('user/batal/' . $item['id_booking']) ?>" method="post" onsubmit="return confirm('Yakin ingin membatalkan booking ini?');">
@@ -133,5 +145,91 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+<!-- Midtrans Snap.js -->
+<script src="<?= env('MIDTRANS_IS_PRODUCTION', false) ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' ?>"
+        data-client-key="<?= env('MIDTRANS_CLIENT_KEY', '') ?>"></script>
+
+<script>
+/**
+ * Inisiasi pembayaran Midtrans Snap
+ * 1. Kirim POST ke backend untuk buat transaksi & dapatkan snap_token
+ * 2. Buka popup Snap dengan snap_token tersebut
+ */
+function initPayment(btn) {
+    const bookingId = btn.dataset.bookingId;
+    const createUrl = btn.dataset.createUrl;
+
+    // Tampilkan loading state
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Memproses...';
+
+    // Ambil CSRF token
+    const csrfToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrf_cookie_name='))
+        ?.split('=')[1] ?? '';
+
+    fetch(createUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ csrf_test_name: csrfToken }),
+        credentials: 'same-origin',
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status !== 'success') {
+            throw new Error(data.message || 'Gagal membuat transaksi.');
+        }
+
+        // Buka popup Midtrans Snap
+        window.snap.pay(data.snap_token, {
+            onSuccess: function(result) {
+                btn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Dibayar';
+                btn.classList.replace('btn-success', 'btn-secondary');
+                showAlert('Pembayaran berhasil! Status akan segera diperbarui.', 'success');
+                setTimeout(() => window.location.href = '<?= base_url('user/payment/finish/') ?>' + bookingId, 2000);
+            },
+            onPending: function(result) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-credit-card me-1"></i>Bayar Sekarang';
+                showAlert('Pembayaran sedang diproses. Selesaikan pembayaran Anda.', 'warning');
+            },
+            onError: function(result) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-credit-card me-1"></i>Bayar Sekarang';
+                showAlert('Pembayaran gagal. Silakan coba lagi.', 'danger');
+            },
+            onClose: function() {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-credit-card me-1"></i>Bayar Sekarang';
+            }
+        });
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-credit-card me-1"></i>Bayar Sekarang';
+        showAlert('Error: ' + err.message, 'danger');
+    });
+}
+
+function showAlert(message, type = 'info') {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert" id="dynamic-alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>`;
+    const existing = document.getElementById('dynamic-alert');
+    if (existing) existing.remove();
+    document.querySelector('.row.g-4').insertAdjacentHTML('beforebegin', alertHtml);
+    setTimeout(() => {
+        const el = document.getElementById('dynamic-alert');
+        if (el) el.classList.remove('show');
+    }, 5000);
+}
+</script>
 
 <?= $this->endSection() ?>

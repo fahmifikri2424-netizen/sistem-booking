@@ -7,20 +7,12 @@ use App\Models\ServiceModel;
 use App\Models\BookingModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
-/**
- * ApiController
- *
- * Menyediakan endpoint API publik untuk sistem booking.
- *
- * Endpoints:
- *   GET /api/services           - Daftar semua layanan aktif
- *   GET /api/booking-status/{id} - Status booking berdasarkan ID atau kode_booking
- */
+
 class ApiController extends BaseController
 {
-    // -------------------------------------------------------------------------
+
     // HELPER: JSON Response
-    // -------------------------------------------------------------------------
+    
 
     /**
      * Mengembalikan response JSON berhasil (HTTP 200 / custom code).
@@ -52,9 +44,9 @@ class ApiController extends BaseController
             ]);
     }
 
-    // =========================================================================
+
     // ENDPOINT 1: GET /api/services
-    // =========================================================================
+    
 
     /**
      * Mengembalikan daftar semua layanan publik (status = aktif).

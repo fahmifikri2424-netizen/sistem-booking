@@ -115,9 +115,7 @@ class Filters extends BaseFilters
             'before' => ['api/*'],
             'after'  => ['api/*'],
         ],
-        // Validasi API Key pada semua route /api/*
-        'api_auth' => [
-            'before' => ['api/*'],
-        ],
+        // Validasi API Key dipindahkan penerapannya ke app/Config/Routes.php
+        // agar tidak mengenai endpoint webhook Midtrans.
     ];
 }
