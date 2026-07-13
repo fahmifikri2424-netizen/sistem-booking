@@ -76,7 +76,10 @@ class AdminStaffController extends BaseController
         ];
 
         if (!$this->validate($rules, $messages)) {
-            return redirect()->to('/admin/staffs/create')->withInput();
+            $data = [
+                'validation' => $this->validator
+            ];
+            return view('admin/staff/create', $data);
         }
 
         $db = \Config\Database::connect();
@@ -187,7 +190,16 @@ class AdminStaffController extends BaseController
         ];
 
         if (!$this->validate($rules, $messages)) {
-            return redirect()->to('/admin/staffs/edit/' . $id)->withInput();
+            $staff = $this->staffModel
+                ->select('staffs.*, users.nama, users.username, users.email, users.telepon, users.status')
+                ->join('users', 'users.id_user = staffs.id_user')
+                ->find($id);
+
+            $data = [
+                'staff'      => $staff,
+                'validation' => $this->validator
+            ];
+            return view('admin/staff/edit', $data);
         }
 
         $db = \Config\Database::connect();

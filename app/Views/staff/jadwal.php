@@ -44,7 +44,11 @@
     <div>
         <h5 class="mb-0 fw-bold">
             <i class="bi bi-calendar-event me-2 text-primary"></i>
-            Jadwal Tanggal: <span class="text-primary"><?= date('d F Y', strtotime($tanggal)) ?></span>
+            <?php if (!empty($tanggal)): ?>
+                Jadwal Tanggal: <span class="text-primary"><?= date('d F Y', strtotime($tanggal)) ?></span>
+            <?php else: ?>
+                Semua Jadwal Mendatang
+            <?php endif; ?>
         </h5>
         <small class="text-muted"><?= count($jadwal) ?> booking ditemukan</small>
     </div>
@@ -57,7 +61,7 @@
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-calendar-x fs-1 mb-3 d-block text-secondary"></i>
                 <h6 class="fw-semibold">Tidak Ada Jadwal</h6>
-                <p class="mb-0 small">Tidak ada tugas pada tanggal <?= date('d F Y', strtotime($tanggal)) ?>.</p>
+                <p class="mb-0 small">Tidak ada tugas pada <?= !empty($tanggal) ? 'tanggal ' . date('d F Y', strtotime($tanggal)) : 'waktu mendatang' ?>.</p>
             </div>
         <?php else: ?>
             <div class="table-responsive">
@@ -70,7 +74,7 @@
                             <th>No. Telepon</th>
                             <th>Layanan</th>
                             <th>Harga</th>
-                            <th>Jam</th>
+                            <th>Tanggal &amp; Jam</th>
                             <th>Catatan</th>
                             <th>Status</th>
                         </tr>
@@ -101,9 +105,9 @@
                                 Rp <?= number_format($item['harga'], 0, ',', '.') ?>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark border">
-                                    <i class="bi bi-clock me-1"></i>
-                                    <?= substr($item['jam_mulai'], 0, 5) ?> – <?= substr($item['jam_selesai'], 0, 5) ?>
+                                <span class="badge bg-light text-dark border d-inline-flex flex-column align-items-start gap-1 p-2">
+                                    <span><i class="bi bi-calendar3 me-1"></i><?= date('d M Y', strtotime($item['tanggal_booking'])) ?></span>
+                                    <span><i class="bi bi-clock me-1"></i><?= substr($item['jam_mulai'], 0, 5) ?> – <?= substr($item['jam_selesai'], 0, 5) ?></span>
                                 </span>
                             </td>
                             <td>

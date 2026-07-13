@@ -37,7 +37,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('bookings', 'BookingController::index');
     $routes->get('bookings/create', 'BookingController::create');
     $routes->post('bookings/store', 'BookingController::store');
-    $routes->post('bookings/confirm/(:num)', 'BookingController::confirm/$1');
+    $routes->post('bookings/confirm/(:num)', 'BookingController::confirm/$1');  
     $routes->post('bookings/cancel/(:num)', 'BookingController::cancel/$1');
     $routes->post('bookings/delete/(:num)', 'BookingController::delete/$1');
 

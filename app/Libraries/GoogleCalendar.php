@@ -22,7 +22,7 @@ use Google\Service\Calendar\EventReminders;
  *
  * Cara penggunaan:
  *   $calendar = new \App\Libraries\GoogleCalendar();
- *   $eventId  = $calendar->createBookingEvent($bookingData);
+ *   $eventId  = $calendar->createBookingEvent($bookingData);  
  *   $calendar->deleteEvent($eventId);
  */
 class GoogleCalendar

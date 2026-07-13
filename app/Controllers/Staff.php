@@ -87,24 +87,30 @@ class Staff extends BaseController
     {
         $id_staff = $this->getIdStaff();
 
-        // Filter tanggal (default: hari ini)
-        $tanggal = $this->request->getGet('tanggal') ?? date('Y-m-d');
+        $tanggal = $this->request->getGet('tanggal');
 
-        $jadwal = $this->bookingModel
+        $query = $this->bookingModel
             ->select('bookings.*, users.nama as nama_customer, users.telepon,
                       services.nama as nama_service, services.harga,
                       schedules.jam_mulai, schedules.jam_selesai')
             ->join('users', 'users.id_user = bookings.id_user')
             ->join('services', 'services.id_service = bookings.id_service')
             ->join('schedules', 'schedules.id_schedule = bookings.id_schedule')
-            ->where('bookings.id_staff', $id_staff)
-            ->where('bookings.tanggal_booking', $tanggal)
+            ->where('bookings.id_staff', $id_staff);
+
+        if (!empty($tanggal)) {
+            $query->where('bookings.tanggal_booking', $tanggal);
+        } else {
+            $query->where('bookings.tanggal_booking >=', date('Y-m-d'));
+        }
+
+        $jadwal = $query->orderBy('bookings.tanggal_booking', 'ASC')
             ->orderBy('schedules.jam_mulai', 'ASC')
             ->findAll();
 
         return view('staff/jadwal', [
             'jadwal'  => $jadwal,
-            'tanggal' => $tanggal,
+            'tanggal' => $tanggal ?? '',
         ]);
     }
 

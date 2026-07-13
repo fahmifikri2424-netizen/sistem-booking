@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -20,26 +20,10 @@ class GoogleCalendar extends BaseConfig
      */
     public string $credentialsPath = '';
 
-    /**
-     * ID Kalender Google yang akan diisi event.
-     *
-     * Untuk kalender utama (primary), gunakan 'primary'.
-     * Untuk kalender lain, salin ID-nya dari Google Calendar Settings.
-     * Contoh: 'namaanda@gmail.com' atau 'abc123xyz@group.calendar.google.com'
-     *
-     * Wajib diisi via .env:
-     *   GOOGLE_CALENDAR_ID = rf595584@gmail.com
-     */
+    
     public string $calendarId = '';
 
-    /**
-     * Email pemilik kalender (akun Google yang memiliki kalender).
-     * Diperlukan agar Service Account bisa menulis ke kalender milik user biasa.
-     * Isi dengan email Google yang sama dengan calendarId.
-     *
-     * Wajib diisi via .env:
-     *   GOOGLE_CALENDAR_SUBJECT = rf595584@gmail.com
-     */
+   
     public string $calendarSubject = '';
 
     /**
